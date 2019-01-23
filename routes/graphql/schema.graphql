@@ -1,0 +1,8 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar ArrayResponse @scalar(class: "App\\Http\\GraphQL\\Scalars\\ArrayResponse")
+
+#import user.graphql
+#import team.graphql
+#import player.graphql
+#import game.graphql
+

@@ -1,0 +1,23 @@
+type Game {
+    id: Int!
+    team_home: Team! @hasOne
+    team_away: Team! @hasOne
+    team_home_score: Int!
+    team_away_score: Int!
+    result: GameResult!
+}
+
+extend type Mutation {
+  createGame(team_home_id: Int!, team_away_id: Int!, team_home_score: Int!, team_away_score: Int!): Game
+}
+
+extend type Query {
+    games: [Game!]! @paginate
+    game(id: Int! @eq): Game @find
+}
+
+enum GameResult {
+  DRAW @enum(value: "draw")
+  HOME @enum(value: "home")
+  AWAY @enum(value: "away")
+}

@@ -1,0 +1,13 @@
+extend type Mutation {
+  createPlayer(name: String!): Player! @create
+}
+
+extend type Query {
+    players: [Player!]! @paginate
+}
+
+type Player {
+    id: Int!
+    name: String!
+    teams: [Team] @belongsToMany
+}

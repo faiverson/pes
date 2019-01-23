@@ -1,0 +1,14 @@
+type Team {
+    id: Int!
+    name: String!
+    players: [Player] @belongsToMany(relation: "players")
+}
+
+extend type Mutation {
+  createTeam(name: String): Team! @create
+}
+
+extend type Query {
+    teams: [Team!]! @paginate
+    teamStats(name: String, id: Int): ArrayResponse!
+}

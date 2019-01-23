@@ -1,0 +1,52 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    games: [User!]! @paginate(type: "relay", model: "App\\Models\\User")
+    teams [Team]! @paginate(type: "connection")
+    team(id: ID @eq): Team @find(model: "App\\Models\\Team")
+}
+
+type Mutation {
+    createUser(
+      cd  name: String @rules(apply: ["required"])
+        email: String @rules(apply: ["required", "email", "unique:users,email"])
+    ): User @create(model: "App\\Models\\User")
+    updateUser(
+        id: ID @rules(apply: ["required"])
+        name: String
+        email: String @rules(apply: ["email"])
+    ): User @update(model: "App\\Models\\User")
+    deleteUser(
+        id: ID @rules(apply: ["required"])
+    ): User @delete(model: "App\\Models\\User")
+}
+
+type User @model {
+    id: ID! @globalId
+    name: String!
+    email: String!
+    password: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Team @model {
+    id: ID! @globalId
+    name: String!
+    players: [Player] @hasMany
+}
+
+type Player @model {
+    id: ID! @globalId
+    name: String!
+    players: [Player] @hasMany
+}
+
+type Game @model {
+    id: ID! @globalId
+    home: Team! @hasOne(relation: "team_home")
+    away: Team! @hasOne(relation: "team_away")
+    team_home_score: Int!
+    team_away_score: Int!
+    result: String!
+}

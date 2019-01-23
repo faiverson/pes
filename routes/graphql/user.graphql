@@ -1,0 +1,18 @@
+type User {
+    id: ID! @globalId
+    name: String!
+    email: String!
+    password: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Mutation {
+  createUser(name: String!, email: String!, password: String!): User! @create
+}
+
+type Query {
+    users: [User!]! @paginate(type: "connection")
+    user(id: Int! @eq): User @find
+    versus(first_team_id: Int, second_team_id: Int): ArrayResponse!
+}
