@@ -82,7 +82,7 @@ return [
     | List directories that will be scanned for custom server-side directives.
     |
     */
-    'directives' => [__DIR__.'/../app/Http/GraphQL/Directives'],
+    'directives' => [__DIR__.'/../app/Http/GraphQL/Directives', 'App\\Http\\GraphQL\\Directives'],
 
     /*
     |--------------------------------------------------------------------------

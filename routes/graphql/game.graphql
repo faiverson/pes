@@ -5,6 +5,7 @@ type Game {
     team_home_score: Int!
     team_away_score: Int!
     result: GameResult!
+    created_at: Date
 }
 
 extend type Mutation {
@@ -12,7 +13,7 @@ extend type Mutation {
 }
 
 extend type Query {
-    games: [Game!]! @paginate
+    games(start_at: Date @date_gte(key: "created_at"), end_at: Date @date_sme(key: "created_at")): [Game!]! @paginate
     game(id: Int! @eq): Game @find
 }
 

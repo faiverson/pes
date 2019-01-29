@@ -23,76 +23,54 @@ class Versus
     {
         $first_team_id = array_get($args, 'first_team_id');
         $second_team_id = array_get($args, 'second_team_id');
-        $summary = array_get($args, 'summary', false);
+        $start_at = array_get($args, 'start_at');
+        $end_at = array_get($args, 'end_at');
         $first_team = Team::find($first_team_id);
         $second_team = Team::find($second_team_id);
 
-        $games = Game::where('team_home_id', $first_team_id)->where('team_away_id', $second_team_id)->get();
+        $query = Game::where(function ($q) use($first_team_id, $second_team_id, $start_at, $end_at) {
+                            $q->where(function ($q) use($first_team_id, $second_team_id, $start_at, $end_at) {
+                                $q->where('team_home_id', $first_team_id)->where('team_away_id', $second_team_id);
+                            })
+                            ->orWhere(function ($q) use($first_team_id, $second_team_id) {
+                                $q->where('team_home_id', $second_team_id)->where('team_away_id', $first_team_id);
+                            });
+                        });
 
-        $first_home = [
-            'games' => $games->count(),
-            'win' => $games->where('result', 'home')->count(),
-            'draw' => $games->where('result', 'draw')->count(),
-            'lost' => $games->where('result', 'away')->count(),
-            'gf' => $games->sum('team_home_score'),
-            'gc' => $games->sum('team_away_score'),
-        ];
-        $second_away = [
-            'games' => $first_home['games'],
-            'win' => $first_home['lost'],
-            'draw' => $first_home['lost'],
-            'lost' => $first_home['win'],
-            'gf' => $first_home['gc'],
-            'gc' => $first_home['gf'],
-        ];
 
-        $games = Game::where('team_home_id', $second_team_id)->where('team_away_id', $first_team_id)->get();
-        $first_away = [
-            'games' => $games->count(),
-            'win' => $games->where('result', 'away')->count(),
-            'draw' => $games->where('result', 'draw')->count(),
-            'lost' => $games->where('result', 'draw')->count(),
-            'gf' => $games->sum('team_away_score'),
-            'gc' => $games->sum('team_home_score'),
-        ];
-        $second_home = [
-            'games' => $first_away['games'],
-            'win' => $first_away['lost'],
-            'draw' => $first_away['lost'],
-            'lost' => $first_away['win'],
-            'gf' => $first_away['gc'],
-            'gc' => $first_away['gf'],
-        ];
-
-        $first_global = [];
-        $second_global = [];
-        foreach ($first_home as $key => $item) {
-            $first_global[$key] = $item + $first_away[$key];
+        if($start_at) {
+            $query = $query->whereDate('created_at', '>=', $start_at);
+        }
+        if($end_at) {
+            $query = $query->whereDate('created_at', '<=', $end_at);
         }
 
-        foreach ($second_home as $key => $item) {
-            $second_global[$key] = $item + $second_away[$key];
-        }
-        if($summary) {
+        $games = $query->get();
+        if($games->isEmpty()) {
             return [
-                $first_team->name => $first_global['win'],
-                'Draw' => $first_global['draw'],
-                $second_team->name => $second_global['win']
+                'games' => 'No data found',
             ];
         }
+        $gf = $games->where('team_home_id', $first_team_id)->sum('team_home_score') + $games->where('team_away_id', $first_team_id)->sum('team_away_score');
+        $gc = $games->where('team_home_id', $second_team_id)->sum('team_home_score') + $games->where('team_away_id', $second_team_id)->sum('team_away_score');
+        $matches = $games->map(function ($game) use($first_team_id) {
+            if($game->team_home->id == $first_team_id) {
+                $response = "{$game->team_home->name} {$game->team_home_score}-{$game->team_away_score} {$game->team_away->name} ({$game->created_at->format('d F Y')})";
+            }
+            else {
+                $response = "{$game->team_away->name} {$game->team_away_score}-{$game->team_home_score} {$game->team_home->name} ({$game->created_at->format('d F Y')})";
+            }
+
+            return $response;
+        });
+
         return [
-            $first_team->name => [
-                'total' => $first_global,
-                'home' => $first_home,
-                'away' => $first_away,
-                'record' => "{$first_global['win']}-{$first_global['draw']}-{$first_global['lost']}"
-            ],
-            $second_team->name => [
-                'total' => $second_global,
-                'home' => $second_home,
-                'away' => $second_away,
-                'record' => "{$second_global['win']}-{$second_global['draw']}-{$second_global['lost']}"
-            ]
+            'total' => $games->count(),
+            $first_team->name => $games->where('team_home_id', $first_team_id)->where('result', 'home')->count() + $games->where('team_away_id', $first_team_id)->where('result', 'away')->count(),
+            'draw' => $games->where('result', 'draw')->count(),
+            $second_team->name => $games->where('team_home_id', $second_team_id)->where('result', 'home')->count() + $games->where('team_away_id', $second_team_id)->where('result', 'away')->count(),
+            'Difference' => ($gf - $gc) . " ({$gf}-{$gc})",
+            'Games' => $matches
         ];
     }
 }

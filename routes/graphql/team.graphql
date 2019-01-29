@@ -2,6 +2,8 @@ type Team {
     id: Int!
     name: String!
     players: [Player] @belongsToMany(relation: "players")
+    results: [String] @field(resolver: "App\\Http\\GraphQL\\Types\\TeamType@results")
+    games: [Game] @field(resolver: "App\\Http\\GraphQL\\Types\\TeamType@games")
 }
 
 extend type Mutation {
@@ -9,6 +11,8 @@ extend type Mutation {
 }
 
 extend type Query {
+    team(name: String @eq, id: Int @eq): Team! @find
     teams: [Team!]! @paginate
     teamStats(name: String, id: Int): ArrayResponse!
+    stats(start_at: Date, end_at: Date): ArrayResponse!
 }

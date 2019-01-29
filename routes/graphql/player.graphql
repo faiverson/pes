@@ -4,6 +4,7 @@ extend type Mutation {
 
 extend type Query {
     players: [Player!]! @paginate
+    players_stats(start_at: Date, end_at: Date): ArrayResponse!
 }
 
 type Player {

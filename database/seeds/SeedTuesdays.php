@@ -54,7 +54,7 @@ class SeedTuesdays extends Seeder
         $players->map(function($item) use($rest) {
             if($rest->count() > 0) {
                 foreach ($rest as $partner) {
-                    $team = \App\Models\Team::create(['name' => "{$item->name} - $partner->name"]);
+                    $team = \App\Models\Team::create(['name' => "{$item->name}-$partner->name"]);
                     $team->players()->sync([$item->id, $partner->id]);
                 }
                 $rest->shift();
