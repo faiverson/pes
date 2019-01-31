@@ -7,3 +7,13 @@ scalar ArrayResponse @scalar(class: "App\\Http\\GraphQL\\Scalars\\ArrayResponse"
 #import player.graphql
 #import game.graphql
 
+type Stats {
+    record: String!,
+    games: Int,
+    avg: String,
+    win: Int,
+    draw: Int,
+    lost: Int,
+    difference: String,
+    matches: [String!]
+}

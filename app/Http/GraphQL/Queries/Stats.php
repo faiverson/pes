@@ -55,14 +55,14 @@ class Stats
             $gc = $team->homeGames->sum('team_away_score') + $team->awayGames->sum('team_home_score');
             $result[$team->name] = [
                 'avg' => $games > 0 ? number_format((($win * 3) + $draw) / ($games * 3) * 100, 0) . '%' : '0%',
+                'games' => $games,
                 'record' => "{$win}-{$draw}-{$lost}",
                 'difference' => $gf - $gc . " ({$gf}-{$gc})",
-                'games' => $games,
-                'win' => $win,
-                'draw' => $draw,
-                'lost' => $lost,
-                'gf' => $gf,
-                'gc' => $gc,
+//                'gc' => $gc,
+//                'gf' => $gf,
+//                'lost' => $lost,
+//                'draw' => $draw,
+//                'win' => $win,
             ];
 
         }

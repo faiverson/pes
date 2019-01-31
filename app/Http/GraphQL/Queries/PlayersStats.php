@@ -59,11 +59,11 @@ class PlayersStats
                 'record' => "{$win}-{$draw}-{$lost}",
                 'difference' => $gf - $gc . " ({$gf}-{$gc})",
                 'games' => $total,
-                'win' => $win,
-                'draw' => $draw,
-                'lost' => $lost,
-                'gf' => $gf,
-                'gc' => $gc,
+//                'win' => $win,
+//                'draw' => $draw,
+//                'lost' => $lost,
+//                'gf' => $gf,
+//                'gc' => $gc,
             ];
         });
 

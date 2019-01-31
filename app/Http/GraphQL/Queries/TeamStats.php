@@ -49,9 +49,9 @@ class TeamStats
             'name' => $team->name,
             'average' => $avg,
             'record' => "{$global['win']}-{$global['draw']}-{$global['lost']}",
-            'global' => $global,
-            'home' => $home,
-            'away' => $first_away
+//            'global' => $global,
+//            'home' => $home,
+//            'away' => $first_away
         ];
     }
 }
