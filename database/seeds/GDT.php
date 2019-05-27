@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Revolution\Google\Sheets\Facades\Sheets;
 use PulkitJalan\Google\Facades\Google;
 
-class FetchSpreadSheet extends Seeder
+class GDT extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,10 +17,11 @@ class FetchSpreadSheet extends Seeder
         $client = Google::getClient();
         $client->setScopes(Google_Service_Sheets::SPREADSHEETS_READONLY);
         $sheets = new \Google_Service_Sheets($client);
-        $spreadsheetId = '1UkLLs2C_OstNisLFB0PhhnsHu9WtnEJC7dJa2SctKlc';
-        $range = 'martes!B2:F77';
+        $spreadsheetId = '1vSTN8M0l2zqIhgEmEw3CuxkVJNo_g50qg9rvrfQfk34NXrrGlCrVMWEJjdWsSjDbu8HQJTyVfDfMmUf';
+        $range = 'sheet_title';
         $response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
-        $rows = $response->getValues();
+        dd($response);
+        $sheets = $response->getValues();
         $this->createGames($rows);
 
         $range = 'martes!B82:F518';

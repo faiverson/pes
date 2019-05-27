@@ -14,6 +14,8 @@ class Game extends Model
         'team_home_score',
         'team_away_score',
         'result',
+        'created_at',
+        'updated_at',
     ];
 
     public $timestamps = true;

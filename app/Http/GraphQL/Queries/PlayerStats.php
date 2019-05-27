@@ -69,11 +69,6 @@ class PlayerStats
             'record' => "{$win}-{$draw}-{$lost}",
             'games' => $total,
             'difference' => $gf - $gc . " ({$gf}-{$gc})",
-            'games' => $total,
-            'win' => $win,
-            'draw' => $draw,
-            'lost' => $lost,
-            'gf' => $gf,
             'results' => $result,
         ];
     }

@@ -39,7 +39,6 @@ class TeamStats
             'gf' => $team->awayGames->sum('team_away_score'),
             'gc' => $team->awayGames->sum('team_home_score'),
         ];
-
         $global = [];
         foreach ($home as $key => $item) {
             $global[$key] = $item + $first_away[$key];
