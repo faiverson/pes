@@ -21,7 +21,8 @@ class TeamStats
     public function resolve($rootValue, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
     {
         $id = array_get($args, 'id');
-        $team = Team::find($id);
+        $name = array_get($args, 'name');
+        $team = $id > 0 ? Team::find($id) : Team::where('name', $name)->first();
 
         $home = [
             'games' => $team->homeGames->count(),
@@ -35,11 +36,10 @@ class TeamStats
             'games' => $team->awayGames->count(),
             'win' => $team->awayGames->where('result', 'away')->count(),
             'draw' => $team->awayGames->where('result', 'draw')->count(),
-            'lost' => $team->awayGames->where('result', 'draw')->count(),
+            'lost' => $team->awayGames->where('result', 'home')->count(),
             'gf' => $team->awayGames->sum('team_away_score'),
             'gc' => $team->awayGames->sum('team_home_score'),
         ];
-
         $global = [];
         foreach ($home as $key => $item) {
             $global[$key] = $item + $first_away[$key];

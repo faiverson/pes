@@ -13,6 +13,6 @@ extend type Mutation {
 extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
     teams: [Team!]! @paginate
-    teamStats(name: String, id: Int): ArrayResponse!
+    teamStats(name: String @eq, id: Int @eq): ArrayResponse!
     stats(start_at: Date, end_at: Date): ArrayResponse!
 }
