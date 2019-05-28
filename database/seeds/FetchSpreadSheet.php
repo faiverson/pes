@@ -23,7 +23,7 @@ class FetchSpreadSheet extends Seeder
         $rows = $response->getValues();
         $this->createGames($rows);
 
-        $range = 'martes!B82:F518';
+        $range = 'martes!B82:F616';
         $response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
         $rows = $response->getValues();
         $this->createGames($rows);
