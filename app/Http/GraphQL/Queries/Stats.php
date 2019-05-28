@@ -72,9 +72,10 @@ class Stats
             extract($team, EXTR_OVERWRITE);
             $results[$name] = [
                 'avg' => $total > 0 ? number_format((($win * 3) + $draw) / ($total * 3) * 100, 0) . '%' : '0%',
+                'games' => "{$total}",
                 'record' => "{$win}-{$draw}-{$lost}",
                 'difference' => $gf - $gc . " ({$gf}-{$gc})",
-                'games' => $games,
+                'results' => $games,
             ];
         }
 
