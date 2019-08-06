@@ -48,6 +48,9 @@ class SeedTuesdays extends Seeder
             ],
             [
                 'name' => 'Kaplan'
+            ],
+            [
+                'name' => 'Marcelo'
             ]
         ];
         \App\Models\Player::insert($players);
