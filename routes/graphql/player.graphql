@@ -3,8 +3,10 @@ extend type Mutation {
 }
 
 extend type Query {
+    player(name: String @eq, id: Int @eq): Player! @find
     players: [Player!]! @paginate
-    player_stats(name: String, start_at: Date, end_at: Date): ArrayResponse!
+    playerStats(name: String @eq, id: Int @eq): ArrayResponse!
+    # player_stats(name: String, start_at: Date, end_at: Date): ArrayResponse!
     players_stats(start_at: Date, end_at: Date): ArrayResponse!
     players_versus(playerA: String, playerB: String, start_at: Date, end_at: Date): ArrayResponse!
 }

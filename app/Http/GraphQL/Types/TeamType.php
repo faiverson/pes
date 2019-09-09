@@ -14,7 +14,9 @@ class TeamType
 
     public function results($root, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
     {
-        $matches = $root->homeGames->merge($root->awayGames)->map(function ($game) use($root) {
+        $merged = $root->homeGames->merge($root->awayGames);
+        $sorted = $merged->sortBy('created_at');
+        $matches = $sorted->map(function ($game) use($root) {
             if($game->team_home->id == $root->id) {
                 $response = "{$game->team_home->name} {$game->team_home_score}-{$game->team_away_score} {$game->team_away->name} ({$game->created_at->format('d F Y')})";
             }
