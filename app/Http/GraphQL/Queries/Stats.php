@@ -70,7 +70,9 @@ class Stats
         $results = [];
         foreach ($teams as $name => $team) {
             extract($team, EXTR_OVERWRITE);
+            $teamData = Team::where('name', $name)->first();
             $results[$name] = [
+                'team_id' => $teamData->id,
                 'avg' => $total > 0 ? number_format((($win * 3) + $draw) / ($total * 3) * 100, 0) . '%' : '0%',
                 'games' => "{$total}",
                 'record' => "{$win}-{$draw}-{$lost}",

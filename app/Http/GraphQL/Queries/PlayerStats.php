@@ -24,9 +24,16 @@ class PlayerStats
     public function resolve($rootValue, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
     {
         $name = array_get($args, 'name');
+        $id = array_get($args, 'id');
+
         $start_at = array_get($args, 'start_at');
         $end_at = array_get($args, 'end_at');
-        $player = Player::where('name', $name)->first();
+
+        if ($id) {
+            $player = Player::where('id', $id)->first();
+        } else {
+            $player = Player::where('name', $name)->first();
+        }
         if(empty($player)) {
             throw new \Exception('wrong name');
         }
@@ -66,6 +73,9 @@ class PlayerStats
         return [
             'name' => $player->name,
             'avg' => $total > 0 ? number_format((($win * 3) + $draw) / ($total * 3) * 100, 0) . '%' : '0%',
+            'win' => $win,
+            'draw' => $draw,
+            'lost' => $lost,
             'record' => "{$win}-{$draw}-{$lost}",
             'games' => $total,
             'difference' => $gf - $gc . " ({$gf}-{$gc})",
