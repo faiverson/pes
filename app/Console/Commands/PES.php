@@ -67,6 +67,7 @@ class PES extends Command
                     'team_away_id' => $away->id,
                     'team_home_score' => $row[2],
                     'team_away_score'=> $row[3],
+                    'version'=> $row[5],
                     'result'=> $row[2] >= $row[3] ? ($row[2] > $row[3] ? 'home' : 'draw')  : 'away',
                     'created_at'=> $date->format('Y-m-d H:i:s'),
                     'updated_at'=> $date->format('Y-m-d H:i:s'),
