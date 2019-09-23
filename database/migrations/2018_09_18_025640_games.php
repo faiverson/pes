@@ -20,6 +20,7 @@ class Games extends Migration
             $table->unsignedInteger('team_home_score');
             $table->unsignedInteger('team_away_score');
             $table->enum('result', ['home', 'draw', 'away']);
+            $table->string('version');
             $table->timestamps();
         });
     }

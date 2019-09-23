@@ -25,6 +25,7 @@ class Stats
     {
         $start_at = array_get($args, 'start_at');
         $end_at = array_get($args, 'end_at');
+        $version = array_get($args, 'version');
 
         $query = Game::with('team_home')->with('team_away');
         if($start_at) {
@@ -32,6 +33,9 @@ class Stats
         }
         if($end_at) {
             $query = $query->whereDate('games.created_at', '<=', $end_at);
+        }
+        if($version) {
+            $query = $query->where('games.version', $version);
         }
 
         $games = $query->get();

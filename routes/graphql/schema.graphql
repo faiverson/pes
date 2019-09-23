@@ -8,12 +8,13 @@ scalar ArrayResponse @scalar(class: "App\\Http\\GraphQL\\Scalars\\ArrayResponse"
 #import game.graphql
 
 type Stats {
-    record: String!,
-    games: Int,
-    avg: String,
-    win: Int,
-    draw: Int,
-    lost: Int,
-    difference: String,
+    version: String!
+    record: String!
+    games: Int!
+    average: String!
+    win: Int!
+    draw: Int!
+    lost: Int!
+    difference: String!
     matches: [String!]
 }

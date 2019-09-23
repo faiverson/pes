@@ -53,7 +53,7 @@ return [
         /*
         | Path to service account json file
         */
-        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', 'google.json')
+        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', base_path('google.json'))
     ],
 
     /*
@@ -68,5 +68,7 @@ return [
     | NOTE: If client id is specified here, it will get over written by the one above.
     |
     */
-    'config' => [],
+    'config' => [
+        'spreadsheetID' => env('GOOGLE_SPREADSHEET_ID')
+    ],
 ];
