@@ -11,3 +11,8 @@ $q = vsprintf(str_replace('?', "'%s'", $query->toSql()), $query->getBindings());
 dd($q);
         
 ```
+
+#Get Started
+`php artisan migrate`
+`php artisan db:seed --class=SeedTuesdays`
+`php artisan pes:results --to=xx`

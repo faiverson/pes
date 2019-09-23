@@ -24,34 +24,46 @@ class TeamStats
         $name = array_get($args, 'name');
         $team = $id > 0 ? Team::find($id) : Team::where('name', $name)->first();
 
-        $home = [
-            'games' => $team->homeGames->count(),
-            'win' => $team->homeGames->where('result', 'home')->count(),
-            'draw' => $team->homeGames->where('result', 'draw')->count(),
-            'lost' => $team->homeGames->where('result', 'away')->count(),
-            'gf' => $team->homeGames->sum('team_home_score'),
-            'gc' => $team->homeGames->sum('team_away_score'),
-        ];
-        $first_away = [
-            'games' => $team->awayGames->count(),
-            'win' => $team->awayGames->where('result', 'away')->count(),
-            'draw' => $team->awayGames->where('result', 'draw')->count(),
-            'lost' => $team->awayGames->where('result', 'home')->count(),
-            'gf' => $team->awayGames->sum('team_away_score'),
-            'gc' => $team->awayGames->sum('team_home_score'),
-        ];
-        $global = [];
-        foreach ($home as $key => $item) {
-            $global[$key] = $item + $first_away[$key];
-        }
-        $avg = $global['games'] > 0 ? number_format((($global['win'] * 3) + $global['draw']) / ($global['games'] * 3) * 100, 0) . '%' : '0%';
-        return [
-            'name' => $team->name,
-            'average' => $avg,
-            'record' => "{$global['win']}-{$global['draw']}-{$global['lost']}",
-            'global' => $global,
-            'home' => $home,
-            'away' => $first_away
-        ];
+        $response = $team->matches->groupBy('version')->map(function ($items, $version) use($team) {
+            $id = $team->id;
+            $data = [
+                'version' => $version,
+                'games' => $items->count(),
+                'win'  => $items->where('team_home_id', $id)->where('result', 'home')->count() + $items->where('team_away_id', $id)->where('result', 'away')->count(),
+                'lost' => $items->where('team_home_id', $id)->where('result', 'away')->count() + $items->where('team_away_id', $id)->where('result', 'home')->count(),
+                'draw' => $items->where('result', 'draw')->count(),
+                'gf'   => $items->where('team_home_id', $id)->sum('team_home_score') + $items->where('team_away_id', $id)->sum('team_away_score'),
+                'gc'   => $items->where('team_home_id', $id)->sum('team_away_score') + $items->where('team_away_id', $id)->sum('team_home_score'),
+            ];
+
+            $data['difference'] = "{$data['gf']}-{$data['gc']}";
+            $data['record'] = "{$data['win']}-{$data['draw']}-{$data['lost']} ({$data['gf']}-{$data['gc']})";
+            $data['average'] = $data['games'] > 0 ? number_format((($data['win'] * 3) + $data['draw']) / ($data['games'] * 3) * 100, 0) . '%' : '0%';
+            $data['matches'] = $items->map(function ($match) {;
+                return "{$match->team_home->name} {$match->team_home_score}-{$match->team_away_score} {$match->team_away->name} ({$match->created_at->format('F d, Y')})" ;
+            })->all();
+            return $data;
+        });
+
+        $response->push($response->pipe(function ($collection) {
+            $total = [
+                'version' => 'PES HISTORY',
+                'games' => $collection->sum('games'),
+                'win' => $collection->sum('win'),
+                'lost' => $collection->sum('lost'),
+                'draw' => $collection->sum('draw'),
+                'gf' => $collection->sum('gf'),
+                'gc' => $collection->sum('gc')
+            ];
+
+            $total['matches'] = $collection->pluck('matches')->flatten();
+            $total['difference'] = "{$total['gf']}-{$total['gc']}";
+            $total['record'] = "{$total['win']}-{$total['draw']}-{$total['lost']} ({$total['gf']}-{$total['gc']})";
+            $total['average'] = $total['games'] > 0 ? number_format((($total['win'] * 3) + $total['draw']) / ($total['games'] * 3) * 100, 0) . '%' : '0%';
+            return $total;
+        }));
+
+        $team->stats = $response->values();
+        return $team;
     }
 }

@@ -15,14 +15,16 @@ class PES extends Command
      *
      * @var string
      */
-    protected $signature = 'pes:results {--from_row=} {--to_row=}';
+    protected $signature = 'pes:results 
+                            {--from= : The row in the spreadsheet where to start the migration data}
+                            {--to= : The row in the spreadsheet where to finish the migration data}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Add new results';
+    protected $description = 'Add new games results reading from a Spreadsheet';
 
     /**
      * Execute the console command.
@@ -31,17 +33,17 @@ class PES extends Command
      */
     public function handle()
     {
-        $from_row = $this->argument('from_row');
-        $to_row = $this->argument('to_row');
+        $from_row = $this->option('from') ?? 2;
+        $to_row = $this->option('to');
         if (empty($from_row) || empty($to_row)) {
-            $this->error("Bad parameters. You need to set --from_row and --to_row");
+            $this->error("Bad parameters. You need to set from and to");
         }
-        \Illuminate\Support\Facades\DB::table('games')->truncate();
+
         $client = Google::getClient();
         $client->setScopes(Google_Service_Sheets::SPREADSHEETS_READONLY);
         $sheets = new \Google_Service_Sheets($client);
-        $spreadsheetId = '1UkLLs2C_OstNisLFB0PhhnsHu9WtnEJC7dJa2SctKlc';
-        $range = "martes!B{$from_row}:F{$to_row}";
+        $spreadsheetId = config('google.config.spreadsheetID');
+        $range = "martes!B{$from_row}:H{$to_row}";
         $response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
         $rows = $response->getValues();
         $this->createGames($rows);
@@ -67,7 +69,7 @@ class PES extends Command
                     'team_away_id' => $away->id,
                     'team_home_score' => $row[2],
                     'team_away_score'=> $row[3],
-                    'version'=> $row[5],
+                    'version'=> $row[6],
                     'result'=> $row[2] >= $row[3] ? ($row[2] > $row[3] ? 'home' : 'draw')  : 'away',
                     'created_at'=> $date->format('Y-m-d H:i:s'),
                     'updated_at'=> $date->format('Y-m-d H:i:s'),
