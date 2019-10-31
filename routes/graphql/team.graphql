@@ -19,5 +19,5 @@ extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
     teams: [Team!]! @paginate
     teamStats(name: String @eq, id: Int @eq): TeamStat!
-    stats(start_at: Date, end_at: Date): ArrayResponse!
+    stats(start_at: Date, end_at: Date, version: String): [TeamStat]
 }
