@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Builders\TeamBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\hasMany;
 
-class Team extends Model
+class Team extends BaseModel
 {
+    protected $builder = TeamBuilder::class;
+
     protected $table = 'teams';
 
     protected $fillable = [

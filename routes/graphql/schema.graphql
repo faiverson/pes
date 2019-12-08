@@ -1,6 +1,5 @@
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
-scalar ArrayResponse @scalar(class: "App\\Http\\GraphQL\\Scalars\\ArrayResponse")
 
 #import user.graphql
 #import team.graphql
@@ -8,19 +7,22 @@ scalar ArrayResponse @scalar(class: "App\\Http\\GraphQL\\Scalars\\ArrayResponse"
 #import game.graphql
 
 type Stats {
-    version: String!
+    version: Version
     record: String!
     games: Int!
     average: String!
     win: Int!
     draw: Int!
     lost: Int!
+    gf: Int!
+    gc: Int!
     difference: String!
     matches: [String!]
 }
 
 enum Version {
-    PES_2018
-    PES_2019
-    PES_2020
+    PES_TOTAL @enum(value:"PES TOTAL")
+    PES_2018 @enum(value: "PES 2018")
+    PES_2019 @enum(value: "PES 2019")
+    PES_2020 @enum(value: "PES 2020")
 }

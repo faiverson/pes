@@ -1,15 +1,14 @@
 type Team {
     id: Int!
     name: String!
-    players: [Player] @belongsToMany(relation: "players")
-    results: [String] @field(resolver: "App\\Http\\GraphQL\\Types\\TeamType@results")
-    games: [Game] @field(resolver: "App\\Http\\GraphQL\\Types\\TeamType@games")
+    players: [Player] @belongsToMany
+    games: [Game] @field(resolver: "App\\GraphQL\\Types\\TeamType@games")
+    stats(
+        start_at: Date, end_at: Date, version: Version
+    ): [Stats] @field(resolver: "App\\GraphQL\\Types\\TeamType@team_stats")
 }
 
-type TeamStat {
-    name: String!
-    stats: [Stats]
-}
+
 
 extend type Mutation {
   createTeam(name: String): Team! @create
@@ -18,6 +17,10 @@ extend type Mutation {
 extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
     teams: [Team!]! @paginate
-    teamStats(name: String @eq, id: Int @eq): TeamStat!
-    stats(start_at: Date, end_at: Date, version: String): [TeamStat]
+    versus(
+        first_team_id: Int,
+        second_team_id: Int,
+        start_at: Date, end_at: Date,
+        version: Version
+    ): [Stats!]
 }

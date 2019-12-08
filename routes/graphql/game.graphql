@@ -1,6 +1,6 @@
 type Game {
     id: Int!
-    team_home: Team! @hasOne
+    teamHome: Team! @hasOne
     team_away: Team! @hasOne
     team_home_score: Int!
     team_away_score: Int!
@@ -9,11 +9,11 @@ type Game {
 }
 
 extend type Mutation {
-  createGame(team_home_id: Int!, team_away_id: Int!, team_home_score: Int!, team_away_score: Int!): Game
+  createGame(input: inputCreateGame! @spread): Game
 }
 
 extend type Query {
-    games(start_at: Date @date_gte(key: "created_at"), end_at: Date @date_sme(key: "created_at")): [Game!]! @paginate
+    games(start_at: Date, end_at: Date): [Game!]! @paginate
     game(id: Int! @eq): Game @find
 }
 
@@ -21,4 +21,11 @@ enum GameResult {
   DRAW @enum(value: "draw")
   HOME @enum(value: "home")
   AWAY @enum(value: "away")
+}
+
+input inputCreateGame{
+    team_home_id: Int!,
+    team_away_id: Int!,
+    team_home_score: Int!,
+    team_away_score: Int!
 }

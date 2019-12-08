@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Builders\PlayerBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Player extends Model
+class Player extends BaseModel
 {
+    protected $builder = PlayerBuilder::class;
+
     protected $table = 'players';
 
     protected $fillable = [

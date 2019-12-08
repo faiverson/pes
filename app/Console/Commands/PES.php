@@ -15,7 +15,7 @@ class PES extends Command
      *
      * @var string
      */
-    protected $signature = 'pes:results 
+    protected $signature = 'pes:results
                             {--from= : The row in the spreadsheet where to start the migration data}
                             {--to= : The row in the spreadsheet where to finish the migration data}';
 

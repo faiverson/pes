@@ -14,5 +14,4 @@ type Mutation {
 type Query {
     users: [User!]! @paginate(type: "connection")
     user(id: Int! @eq): User @find
-    versus(first_team_id: Int, second_team_id: Int, start_at: Date, end_at: Date): ArrayResponse!
 }

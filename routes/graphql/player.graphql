@@ -3,16 +3,18 @@ extend type Mutation {
 }
 
 extend type Query {
-    player(name: String @eq, id: Int @eq): Player! @find
+    player(id: ID @eq @globalID,
+        name: String @eq
+    ): Player! @find
+
     players: [Player!]! @paginate
-    playerStats(name: String @eq, id: Int @eq): ArrayResponse!
-    # player_stats(name: String, start_at: Date, end_at: Date): ArrayResponse!
-    players_stats(start_at: Date, end_at: Date): ArrayResponse!
-    players_versus(playerA: String, playerB: String, start_at: Date, end_at: Date): ArrayResponse!
+
+    players_versus(playerA: String, playerB: String, start_at: Date, end_at: Date): Stats!
 }
 
 type Player {
     id: Int!
     name: String!
     teams: [Team] @belongsToMany
+    stats(version: Version): [Stats!] @field(resolver: "App\\GraphQL\\Types\\PlayerType@stats")
 }

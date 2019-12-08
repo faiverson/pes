@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Builders\GameBuilder;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Game extends Model
+class Game extends BaseModel
 {
+    protected $builder = GameBuilder::class;
+
     protected $table = 'games';
+
+    protected $with = ['teamHome', 'teamAway'];
 
     protected $fillable = [
         'team_home_id',
@@ -19,12 +24,12 @@ class Game extends Model
         'updated_at',
     ];
 
-    public function team_home()
+    public function teamHome(): HasOne
     {
         return $this->hasOne(Team::class, 'id', 'team_home_id');
     }
 
-    public function team_away()
+    public function teamAway(): HasOne
     {
         return $this->hasOne(Team::class, 'id', 'team_away_id');
     }

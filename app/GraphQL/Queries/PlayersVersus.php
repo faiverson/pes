@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\GraphQL\Queries;
+namespace App\GraphQL\Queries;
 
 use App\Models\Player;
 use Carbon\Carbon;
@@ -20,7 +20,7 @@ class PlayersVersus
      *
      * @return mixed
      */
-    public function resolve($rootValue, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
+    public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $playerA = array_get($args, 'playerA');
         $playerB = array_get($args, 'playerB');

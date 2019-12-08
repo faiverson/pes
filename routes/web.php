@@ -14,8 +14,3 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::group(['prefix' => '/games'], function () {
-    Route::get('', 'GameController@index');
-    Route::get('/create', 'GameController@create');
-});
