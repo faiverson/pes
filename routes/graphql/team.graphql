@@ -8,15 +8,16 @@ type Team {
     ): [Stats] @field(resolver: "App\\GraphQL\\Types\\TeamType@team_stats")
 }
 
-
-
 extend type Mutation {
   createTeam(name: String): Team! @create
 }
 
 extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
-    teams: [Team!]! @paginate
+
+    teams: [Team!]!
+        @paginate
+
     versus(
         first_team_id: Int,
         second_team_id: Int,
