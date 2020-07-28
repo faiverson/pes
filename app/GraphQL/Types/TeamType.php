@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Types;
 
+use App\Models\Team;
 use App\Traits\GameStats;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Arr;
@@ -32,5 +33,10 @@ class TeamType
 
         $stats = $this->stats($games, $team);
         return $version ? $stats : $this->history($stats)->values();
+    }
+
+    public function withGames($team, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
+    {
+        return $team->has('stats');
     }
 }

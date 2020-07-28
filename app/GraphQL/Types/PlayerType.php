@@ -40,6 +40,7 @@ class PlayerType
             $draw = $this->draw($items);
             $lost = $items->whereIn('team_home_id', $teams)->where('result', 'away')->count();
             $lost += $items->whereIn('team_away_id', $teams)->where('result', 'home')->count();
+            $avg = $this->average($games, $win, $draw);
             return collect([
                 'record' => $this->record($win, $draw, $lost, $favor, $against),
                 'version' => $version,
@@ -50,7 +51,8 @@ class PlayerType
                 'gf' => $favor,
                 'gc' => $against,
                 'difference' => $this->difference($favor, $against),
-                'average' => $this->average($games, $win, $draw),
+                'average' => $avg .'%',
+                'avg' => $avg,
                 'matches' => $this->matches($items)
             ]);
         })->sortKeysDesc();

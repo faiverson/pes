@@ -5,6 +5,7 @@ namespace App\Traits;
 
 use App\Models\Team;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 trait GameStats
 {
@@ -17,6 +18,7 @@ trait GameStats
             $win = $this->win($items, $team);
             $draw = $this->draw($items);
             $lost = $this->lost($items, $team);
+            $avg = $this->average($games, $win, $draw);
             return collect([
                 'record' => $this->record($win, $draw, $lost, $favor, $against),
                 'version' => $version,
@@ -27,7 +29,8 @@ trait GameStats
                 'gf' => $favor,
                 'gc' => $against,
                 'difference' => $this->difference($favor, $against),
-                'average' => $this->average($games, $win, $draw),
+                'average' => $avg . '%',
+                'avg' => (float) $avg,
                 'matches' => $this->matches($items)
             ]);
         })->sortKeysDesc();
@@ -40,7 +43,7 @@ trait GameStats
 
     protected function average($games, $win, $draw): string
     {
-        return $games > 0 ? number_format((($win * 3) + $draw) / ($games * 3) * 100, 0) . '%' : '0%';
+        return $games > 0 ? number_format((($win * 3) + $draw) / ($games * 3) * 100, 2)  : '0%';
     }
 
     protected function difference($favor, $against): int
@@ -102,6 +105,7 @@ trait GameStats
             $draw = $collection->sum('draw');
             $gf = $collection->sum('gf');
             $gc = $collection->sum('gc');
+            $avg = $this->average($games, $win, $draw);
             return collect([
                 'version' => 'PES TOTAL',
                 'games' => $games,
@@ -112,7 +116,8 @@ trait GameStats
                 'gc' => $gc,
                 'difference' => $this->difference($gf, $gc),
                 'record' => $this->record($win, $draw, $lost, $gf, $gc),
-                'average' => $this->average($games, $win, $draw),
+                'average' => $avg . "%",
+                'avg' => (float) $avg,
                 'matches' => $collection->pluck('matches')->flatten()
             ]);
         });

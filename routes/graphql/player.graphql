@@ -7,14 +7,16 @@ extend type Query {
         name: String @eq
     ): Player! @find
 
-    players: [Player!]! @paginate
+    players: [Player!]! @all
 
-    players_versus(playerA: String, playerB: String, start_at: Date, end_at: Date): Stats!
+    players_versus(playerA: String, playerB: String, version: Version, start_at: Date, end_at: Date): Json!
 }
 
 type Player {
     id: Int!
     name: String!
     teams: [Team] @belongsToMany
-    stats(version: Version): [Stats!] @field(resolver: "App\\GraphQL\\Types\\PlayerType@stats")
+    stats(
+        start_at: Date, end_at: Date, version: Version
+    ): [Stats] @field(resolver: "App\\GraphQL\\Types\\PlayerType@stats")
 }

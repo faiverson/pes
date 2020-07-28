@@ -16,7 +16,7 @@ extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
 
     teams: [Team!]!
-        @paginate
+     @all
 
     versus(
         first_team_id: Int,

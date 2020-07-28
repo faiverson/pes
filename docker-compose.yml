@@ -6,7 +6,7 @@ networks:
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: pes_nginx
     ports:
       - "80:80"
     volumes:
@@ -20,7 +20,7 @@ services:
 
   mysql:
     image: mysql:5.7.22
-    container_name: mysql
+    container_name: pes_mysql
     restart: unless-stopped
     tty: true
     ports:

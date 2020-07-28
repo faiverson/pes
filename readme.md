@@ -15,4 +15,4 @@ dd($q);
 #Get Started
 `php artisan migrate`
 `php artisan db:seed --class=SeedTuesdays`
-`php artisan pes:results --to=xx`
+`php artisan pes:results --to=xx` 

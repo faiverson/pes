@@ -2,14 +2,19 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Game;
 use App\Models\Player;
+use App\Traits\GameStats;
 use Carbon\Carbon;
 use GraphQL\Type\Definition\ResolveInfo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class PlayersVersus
 {
+    use GameStats;
+
     /**
      * Return a value for the field.
      *
@@ -22,14 +27,16 @@ class PlayersVersus
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        $playerA = array_get($args, 'playerA');
-        $playerB = array_get($args, 'playerB');
-        $start_at = array_get($args, 'start_at');
-        $end_at = array_get($args, 'end_at');
+        $playerA = Arr::get($args, 'playerA');
+        $playerB = Arr::get($args, 'playerB');
+        $start_at = Arr::get($args, 'start_at');
+        $end_at = Arr::get($args, 'end_at');
+        $version = Arr::get($args, 'version');
+
         $player_home = Player::where('name', $playerA)->first();
         $player_away = Player::where('name', $playerB)->first();
-        $query = DB::table('games')
-            ->select('games.*', 'teamA.id as teamA_id', 'teamA.name as teamA_name', 'playerTeamA.name as playerA_name', 'playerTeamA.id as playerA_id',
+//        Game::withPlayer($playerA)
+        $query = Game::select('games.*', 'teamA.id as teamA_id', 'teamA.name as teamA_name', 'playerTeamA.name as playerA_name', 'playerTeamA.id as playerA_id',
         'teamB.id as teamB_id', 'teamB.name as teamB_name', 'playerTeamB.name as playerB_name', 'playerTeamB.id as playerB_id')
             ->join('teams as teamA', function ($join) {
                 $join->on('games.team_home_id', '=', 'teamA.id')
@@ -44,18 +51,12 @@ class PlayersVersus
             })
             ->join('players_teams as ptB', 'teamB.id', '=', 'ptB.team_id')
             ->join('players as playerTeamB', 'ptB.player_id', '=', 'playerTeamB.id')
-
             ->where('playerTeamA.id', $player_home->id)
             ->where('playerTeamB.id', $player_away->id)
             ->whereRaw('playerTeamA.id <> playerTeamB.id')
-            ->whereRaw('teamA.id <> teamB.id');
-
-        if($start_at) {
-            $query = $query->whereDate('games.created_at', '>=', $start_at);
-        }
-        if($end_at) {
-            $query = $query->whereDate('games.created_at', '<=', $end_at);
-        }
+            ->whereRaw('teamA.id <> teamB.id')
+            ->dates($start_at, $end_at)
+            ->version($version);
 
         $games = $query->get();
         $total =  $games->count();
@@ -73,15 +74,12 @@ class PlayersVersus
             $date = new Carbon($game->created_at);
            return "{$game->teamA_name} {$scoreA}-{$scoreB} {$game->teamB_name} ({$date->format('d F Y')})";
         });
+
         return [
             'games' => $total,
-            $player_home->name => $win,
-            'Draw' => $draw,
-            $player_away->name => $lost,
-            'Difference' => $gf - $gc . " ({$gf}-{$gc})",
-            'Results' => $result,
+            "results" => "{$player_home->name} {$win}-{$draw}-{$lost} {$player_away->name}",
+            "score" => "{$player_home->name} {$gf}-{$gc} {$player_away->name}",
+            'matches' => $result,
         ];
-
-        return collect($result)->sortByDesc('avg');
     }
 }
