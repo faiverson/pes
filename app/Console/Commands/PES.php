@@ -61,7 +61,7 @@ class PES extends Command
             sort($players);
             $away = \App\Models\Team::where('name', "{$players[0]}-{$players[1]}")->first();
             if(empty($home) || empty($away)) {
-                $this->error("ERROR", $row);
+                dd('Missing teams', $row);
             }
             try {
                 $game = \App\Models\Game::create([
@@ -78,7 +78,7 @@ class PES extends Command
             catch (\Exception $e) {
                 dd($row);
             }
-            $this->info("Game created ID: {$game->id}");
+            $this->info("Game created ID: {$game->id} - {$game->teamHome->name} {$game->team_home_score}-{$game->team_away_score} {$game->teamAway->name}");
         }
     }
 }

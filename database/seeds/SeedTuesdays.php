@@ -38,7 +38,7 @@ class SeedTuesdays extends Seeder
                 'name' => 'Negro Juan'
             ],
             [
-                'name' => 'Pablo H'
+                'name' => 'Hache'
             ],
             [
                 'name' => 'Martin'

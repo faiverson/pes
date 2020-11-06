@@ -1,7 +1,7 @@
 type Game {
     id: Int!
     teamHome: Team! @hasOne
-    team_away: Team! @hasOne
+    teamAway: Team! @hasOne
     team_home_score: Int!
     team_away_score: Int!
     result: GameResult!

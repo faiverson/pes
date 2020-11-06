@@ -43,7 +43,7 @@ trait GameStats
 
     protected function average($games, $win, $draw): string
     {
-        return $games > 0 ? number_format((($win * 3) + $draw) / ($games * 3) * 100, 2)  : '0%';
+        return $games > 0 ? number_format((($win * 3) + $draw) / ($games * 3) * 100, 2)  : 0;
     }
 
     protected function difference($favor, $against): int
