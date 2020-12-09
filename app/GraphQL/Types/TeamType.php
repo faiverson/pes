@@ -32,7 +32,9 @@ class TeamType
                       ->get();
 
         $stats = $this->stats($games, $team);
-        return $version ? $stats : $this->history($stats)->values();
+        $response = $version ? $stats : $this->history($stats)->values();
+        $team->stats = $response;
+        return $response;
     }
 
     public function withGames($team, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)

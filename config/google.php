@@ -17,11 +17,11 @@ return [
     | https://developers.google.com/console
     |
     */
-    'client_id'       => env('GOOGLE_CLIENT_ID', ''),
-    'client_secret'   => env('GOOGLE_CLIENT_SECRET', ''),
-    'redirect_uri'    => env('GOOGLE_REDIRECT', ''),
-    'scopes'          => [],
-    'access_type'     => 'online',
+    'client_id' => env('GOOGLE_CLIENT_ID', ''),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
+    'redirect_uri' => env('GOOGLE_REDIRECT', ''),
+    'scopes' => [],
+    'access_type' => 'online',
     'approval_prompt' => 'auto',
 
     /*
@@ -48,12 +48,13 @@ return [
         /*
         | Enable service account auth or not.
         */
-        'enable' => env('GOOGLE_SERVICE_ENABLED', true),
+        'enable' => env('GOOGLE_SERVICE_ENABLED', false),
 
         /*
-        | Path to service account json file
-        */
-        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', base_path('google.json'))
+         * Path to service account json file. You can also pass the credentials as an array
+         * instead of a file path.
+         */
+        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', ''),
     ],
 
     /*
@@ -68,7 +69,5 @@ return [
     | NOTE: If client id is specified here, it will get over written by the one above.
     |
     */
-    'config' => [
-        'spreadsheetID' => env('GOOGLE_SPREADSHEET_ID')
-    ],
+    'config' => [],
 ];

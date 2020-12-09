@@ -1,0 +1,34 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+scalar Json @scalar(class: "App\\GraphQL\\Scalars\\JSON")
+
+#import user.graphql
+#import team.graphql
+#import player.graphql
+#import game.graphql
+
+type Stats {
+    version: Version
+    record: String!
+    games: Int!
+    average: String!
+    win: Int!
+    draw: Int!
+    lost: Int!
+    gf: Int!
+    gc: Int!
+    difference: String!
+    matches: [String!]
+}
+
+enum Version {
+    PES_TOTAL @enum(value:"PES TOTAL")
+    PES_2018 @enum(value: "PES 2018")
+    PES_2019 @enum(value: "PES 2019")
+    PES_2020 @enum(value: "PES 2020")
+    PES_2021 @enum(value: "PES 2021")
+}

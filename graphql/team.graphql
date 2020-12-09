@@ -5,7 +5,8 @@ type Team {
     games: [Game] @field(resolver: "App\\GraphQL\\Types\\TeamType@games")
     stats(
         start_at: Date, end_at: Date, version: Version
-    ): [Stats] @field(resolver: "App\\GraphQL\\Types\\TeamType@team_stats")
+    ): [Stats] @builder(method: "App\\Models\\Team@stats")
+#      @field(resolver: "App\\GraphQL\\Types\\TeamType@team_stats")
 }
 
 extend type Mutation {
@@ -16,7 +17,11 @@ extend type Query {
     team(name: String @eq, id: Int @eq): Team! @find
 
     teams: [Team!]!
-     @all
+      @all
+
+    team_stats(
+      start_at: Date, end_at: Date, version: Version
+    ): Json
 
     versus(
         first_team_id: Int,
