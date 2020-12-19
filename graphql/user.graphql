@@ -12,6 +12,7 @@ type Mutation {
 }
 
 type Query {
-    users: [User!]! @paginate(type: "connection")
-    user(id: Int! @eq): User @find
+  users: [User!]! @paginate(type: "connection")
+
+  user(id: Int! @eq): User @find
 }

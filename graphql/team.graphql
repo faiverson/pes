@@ -14,19 +14,26 @@ extend type Mutation {
 }
 
 extend type Query {
-    team(name: String @eq, id: Int @eq): Team! @find
+  team(name: String @eq, id: Int @eq): Team! @find
 
-    teams: [Team!]!
-      @all
+  teams: [Team!]!
+    @all
 
-    team_stats(
-      start_at: Date, end_at: Date, version: Version
-    ): Json
+  team_stats(
+    start_at: Date, end_at: Date, version: Version
+  ): Json
 
-    versus(
-        first_team_id: Int,
-        second_team_id: Int,
-        start_at: Date, end_at: Date,
-        version: Version
-    ): [Stats!]
+  versus(
+      first_team_id: Int,
+      second_team_id: Int,
+      start_at: Date, end_at: Date,
+      version: Version
+  ): [Stats!]
+
+  draw(participants: [inputParticipants!]): [Team!]
+}
+
+input inputParticipants {
+  name: String!
+  weight: Int
 }
