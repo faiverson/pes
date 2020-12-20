@@ -42,7 +42,7 @@ class PES extends Command
         $client = Google::getClient();
         $client->setScopes(Google_Service_Sheets::SPREADSHEETS_READONLY);
         $sheets = new \Google_Service_Sheets($client);
-        $spreadsheetId = config('google.config.spreadsheetID');
+        $spreadsheetId = config('google.client_id');
         $range = "martes!B{$from_row}:H{$to_row}";
         $response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
         $rows = $response->getValues();

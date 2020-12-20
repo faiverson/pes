@@ -30,7 +30,12 @@ extend type Query {
       version: Version
   ): [Stats!]
 
-  draw(participants: [inputParticipants!]): [Team!]
+  draw(participants: [inputParticipants!]): Draw
+}
+
+type Draw {
+  modality: Player!
+  teams: [Team!]
 }
 
 input inputParticipants {

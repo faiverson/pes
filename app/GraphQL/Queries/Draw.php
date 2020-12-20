@@ -35,8 +35,9 @@ class Draw
             return [$key => $player];
         });
 
-        $strong = $groups->get('strong');
-        $weak = $groups->get('weak');
+        $strong = $groups->get('strong') ?? collect();
+        $weak = $groups->get('weak') ?? collect();
+
         if($strong->count() > $weak->count()) {
             $this->balance($strong, $weak);
         } elseif($weak->count() > $strong->count()) {
@@ -57,16 +58,63 @@ class Draw
             })->first();
         }
 
-        return $teams;
-//        dd($c->pluck('name')->all(), $strong->shuffle()->all());
+        $response = [
+            'modality' => $strong->merge($weak)->shuffle()->first(),
+            'teams' => $teams,
+        ];
 
+        $this->whatsapp($response);
+        return $response;
     }
+
     private function balance(&$bigger, &$lower)
     {
         $half = ($bigger->count() + $lower->count()) / 2;
         while($bigger->count() > $half) {
             $item = $bigger->shift();
             $lower->push($item);
+        }
+    }
+
+    private function whatsapp($response)
+    {
+        $teams = collect(Arr::get($response, 'teams'));
+        $player = Arr::get($response, 'modality');
+        $team_txt = implode("\n", $teams->pluck('name')->all());
+        $url = "https://messages-sandbox.nexmo.com/v0.1/messages";
+        $text = "*Modalidad:* $player->name\n*Equipos:*\n$team_txt";
+
+        $phones = [
+            '5493516223135', // fabian
+            '5493513811489', // juan
+            '5493516371891', // gabi
+            '5493516852080', // tincho
+            '5493516806389', // horacio
+//            '5493512353460',
+//            '5493516142986',
+            '5493512001308', // luciano
+        ];
+
+        foreach ($phones as $phone) {
+            $params = [
+                "from" => ["type" => "whatsapp", "number" => "14157386170"],
+                "to" => ["type" => "whatsapp", "number" => $phone],
+                "message" => [
+                    "content" => [
+                        "type" => "text",
+                        "text" => $text
+                    ]
+                ]
+            ];
+            $headers = [
+                "Authorization" => "Basic " . base64_encode(env('NEXMO_API_KEY') . ":" . env('NEXMO_API_SECRET')),
+                "Content-Type" => "application/json",
+                "Accept" => "application/json",
+            ];
+
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('POST', $url, ["headers" => $headers, "json" => $params]);
+            $data[]  = $response->getBody()->getContents();
         }
     }
 }
