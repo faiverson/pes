@@ -12,6 +12,8 @@ class Team extends BaseModel
 
     protected $table = 'teams';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
     ];
